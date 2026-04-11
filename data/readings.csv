@@ -67,3 +67,4 @@ date,time,glucose_mg_dl,novorapid_units,lantus_units,waking_reading,meal_context
 2026-04-11,11:10,208,7,0,1,pre_breakfast,
 2026-04-11,15:50,132,8,0,0,pre_lunch,
 2026-04-11,19:00,NaN,0,0,0,pre_dinner,ate dinner - skipped measurement and novorapid
+2026-04-11,21:00,188,0,18,0,bedtime,
