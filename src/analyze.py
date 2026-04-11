@@ -22,17 +22,17 @@ def waking_glucose_stats(df):
 def lantus_vs_waking(df):
     df = df.copy().sort_values("timestamp").reset_index(drop=True)
 
-    lantus_rows = df[df["lantus_units"] > 0][["timestamp", "lantus_units"]].copy()
+    bedtime_rows = df[df["meal_context"] == "bedtime"][["timestamp", "lantus_units"]].copy()
     waking_rows = df[df["waking_reading"] == 1][["timestamp", "glucose_mg_dl"]].copy()
 
     pairs = []
-    for _, lrow in lantus_rows.iterrows():
-        future_waking = waking_rows[waking_rows["timestamp"] > lrow["timestamp"]]
+    for _, brow in bedtime_rows.iterrows():
+        future_waking = waking_rows[waking_rows["timestamp"] > brow["timestamp"]]
         if not future_waking.empty:
             next_waking = future_waking.iloc[0]
             pairs.append({
-                "lantus_units": lrow["lantus_units"],
-                "lantus_time": lrow["timestamp"],
+                "lantus_units": brow["lantus_units"],
+                "bedtime_time": brow["timestamp"],
                 "next_waking_glucose": next_waking["glucose_mg_dl"],
                 "next_waking_time": next_waking["timestamp"],
             })
@@ -42,8 +42,9 @@ def lantus_vs_waking(df):
     print("\n=== Lantus Dose vs Next Waking Glucose ===")
     print(result[["lantus_units", "next_waking_glucose"]].to_string(index=False))
 
-    if len(result) >= 3:
-        r, p = stats.pearsonr(result["lantus_units"], result["next_waking_glucose"])
+    valid = result.dropna(subset=["lantus_units", "next_waking_glucose"])
+    if len(valid) >= 3:
+        r, p = stats.pearsonr(valid["lantus_units"], valid["next_waking_glucose"])
         print(f"\nPearson correlation:  r = {r:.3f},  p = {p:.4f}")
         if p < 0.05:
             print("Statistically significant correlation.")
@@ -51,7 +52,6 @@ def lantus_vs_waking(df):
             print("No statistically significant correlation (expected with small dataset).")
 
     return result
-
 
 def meal_spike_analysis(df):
     df = df.copy().sort_values("timestamp").reset_index(drop=True)
