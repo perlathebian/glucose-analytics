@@ -3,3 +3,6 @@ matplotlib
 seaborn
 scipy
 scikit-learn
+reportlab
+arabic-reshaper
+python-bidi

@@ -12,6 +12,7 @@ from src.analyze import (
     novorapid_effectiveness
 )
 from src.model import run_model
+from src.report import generate_report
 
 df = load_data()
 summarize(df)
@@ -26,3 +27,4 @@ lantus_vs_waking(df)
 meal_spike_analysis(df)
 novorapid_effectiveness(df)
 run_model(df)
+generate_report(df)
